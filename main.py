@@ -20,19 +20,14 @@ data = xr.open_dataset(data_dir)
 
 ref_dat = data.sel(latitude = slice(30,72), longitude = slice(-13,25), time = slice("1981-01-01","2010-12-31"))
 
-#test_dat = ref_dat.sel(time = "2002-06-01")
-#test_dat["tg"].plot(x = "longitude")
-
 monMean = ref_dat["tg"].groupby("time.month").mean("time")
-
-#test = monMean.sel(month = 1)
-#test.plot(x = "longitude")
 
 # 3. Calculate monthly anomalies from the reference period for the year 2018 (use the same extent as in #2).
 #    Make a quick plot of the anomalies for the region. [2P]
 
 anomaly = data.sel(latitude = slice(30,72), longitude = slice(-13,25), time = "2018")
 anomaly = anomaly["tg"].groupby("time.month").mean("time")
+
 #anomaly = 2018 - monMean
 anomaly = anomaly - monMean
 anomaly.plot(x = "longitude", col = "month", col_wrap = 3)
@@ -44,12 +39,10 @@ anomaly.plot(x = "longitude", col = "month", col_wrap = 3)
 from utils import mean_anomaly
 
 mean_ano_18 = mean_anomaly(x = data, lat_min = 30, lat_max = 72, lon_min = -13, lon_max = 25, year = 2018)
-#mean_ano_18.plot(x = "longitude")
 
 #Marburg = 50.85/8.77
 #umschließendes Pixel: (50.75 - 51 / 8.75 - 9)
 mr_anomaly = mean_anomaly(x = data, lat_min = 50.75, lat_max = 51, lon_min = 8.75, lon_max = 9, year = 2018)
-#mr_anomaly.plot()
 
 # 5. Write the monthly anomalies from task 3 to a netcdf file with name "europe_anom_2018.nc" to the solution directory.
 #    Write the monthly anomalies for Marburg to a csv file with name "marburg_anom_2018.csv" to the solution directory. [2P]
